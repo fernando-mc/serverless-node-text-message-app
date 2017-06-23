@@ -1,0 +1,10 @@
+service: serverless-node-text-message-app
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+functions:
+  processFormSendSms:
+    handler: handler.process
+
