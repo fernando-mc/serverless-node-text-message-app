@@ -3,10 +3,27 @@
 const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
 const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+const request = require('request');
 const twilioClient = require('twilio')(twilioAccountSid, twilioAuthToken);
+const recaptchaSecret = process.env.GOOGLE_RECAPTHCA_SECERT;
+const recaptchaUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-
-module.exports.validateRecaptchaSendSms = (event, context, callback) => {
+module.exports.validateRecaptchaSendSms = (event, context, callback) => {    
+    // node request lib
+    const recaptchaData = {
+            'secret': GA_SECRET, 
+            'response': event['captcha']
+          }
+    request({
+      url: recaptchaUrl,
+      method: 'POST',
+      json: true,
+      body: recaptchaData,
+    }, function (error, response, body){
+      console.log(response);
+      console.log(body);
+      const recaptchaStatus = response['success']
+    });
 
 
     // Process event and get values out
