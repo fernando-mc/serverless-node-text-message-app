@@ -3,8 +3,19 @@ service: serverless-node-text-message-app
 provider:
   name: aws
   runtime: nodejs6.10
+  environment:
+    # replace these env variables with your twilio account values
+    TWILIO_ACCOUNT_SID: YOUR-TWILIO-ACCOUNT-SID-HERE
+    TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN-HERE
+    TWILIO_PHONE_NUMBER: YOUR-TWILIO-PHONE-NUMBER-HERE
+    GOOGLE_RECAPTCHA_TOKEN: YOUR-RECAPTCHA-TOKEN-HERE
 
 functions:
-  processFormSendSms:
-    handler: handler.process
-
+  validateRecaptchaSendSms:
+    handler: handler.validateRecaptchaSendSms
+    events:
+      - http:
+          path: api/sendSms
+          method: post
+          integration: lambda
+          cors: true
