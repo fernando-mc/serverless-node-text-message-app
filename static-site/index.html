@@ -2,65 +2,78 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="main.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.js"></script>
 </head>
 
+<!-- There are two values to replace in the file below -->
+<!-- YOUR_RECAPTCHA_SITE_KEY in the HTML form below and -->
+<!-- YOUR_API_ENDPOINT_URL in the script section below that -->
+
 <body>
-  <div class="container">
-    <div class="">
-        <div id='logo'>
-          <img src="http://thewoofgarden.com/img/projects/riley_and_bella.jpg" />
-        </div>
-        <h3>Woof Garden Text Notification System</h3>
-        <div id="message"></div>
-        <div class="inputs">
-          <input id="phone-number" placeholder="Phone Number" />
-          <input id="text" placeholder="Input your text message" />
-        </div>
-        <textarea style="margin-bottom: 20px" id="message" rows="3" placeholder="Your message"></textarea>
-        <div class="g-recaptcha" data-sitekey="6LcXNhAUAAAAAD5LX_MTjJC7cNDuDPesw2NKljjH"></div>
-        <div class='api-actions'>
-          <button id="send-sms" class="btn">Send Text</button>
-        </div>
-          Adapted from 
-        <a href="https://github.com/serverless/examples/">Serverless' Examples</a>
-        
-    </div>
+  <!-- Start HTML for form -->
+  <div class="container">  
+    <form id="contact" action="" method="post">
+      <div id='logo'>
+        <img src="http://thewoofgarden.com/img/projects/riley_and_bella.jpg" />
+        <img src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/blog/twilio-logo.jpg" />
+        <img src="http://thewoofgarden.com/img/projects/judo_and_terry.jpg" />
+      </div>
+      <h3>Woof Garden Text Reminders</h3>
+      <h4>Fill out this form to send a text message to a client.</h4>
+      <div id='error-message'></div>
+      <fieldset>
+        <input id="phone-number" placeholder="Client Phone Number" type="tel" tabindex="3" required>
+      </fieldset>
+      <fieldset>
+        <textarea id="message" placeholder="Message to client here...." tabindex="5" required></textarea>
+      </fieldset>
+      <!-- Replace YOUR_RECAPTCHA_SITE_KEY with yours -->
+      <!-- It should look something like this: -->
+      <!-- 7LSAAUACSAAD5PZ_MYQAiC7cNDuDPesw3MUljI -->
+      <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+      <fieldset>
+        <button name="submit" type="submit" id="send-text" data-submit="...Sending">Send Message</button>
+      </fieldset>
+      <p class="copyright">Design inspired by <a href="https://colorlib.com" target="_blank" title="Colorlib">Colorlib</a></p>
+    </form>
   </div>
-  <!-- polyfill browser fetch -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.1/fetch.js"></script>
+  <!-- End HTML for form -->
+
+
+  <!-- Start JS for form submission -->
   <script>
     // Replace the YOUR_API_ENDPOINT_URL with yours
     // It should look something like this:
     // https://qw324asdasd.execute-api.us-east-1.amazonaws.com/dev/api/sendSms
     const API_ENDPOINT = 'YOUR_API_ENDPOINT_URL';
-    const messageDiv = document.getElementById('message')
+    var messageDiv = document.getElementById('error-message')
     // Handle public api call
     document.getElementById('send-text').addEventListener('click', function () {
-      const captchtaResponse = grecaptcha.getResponse()
-      console.log(captchta_response);
-      const text = document.getElementById('text').value
-      const number = document.getElementById('phone-number').value
+      const captchtaResponse = grecaptcha.getResponse() || false
+      const textMessage = document.getElementById('message').value
+      const phoneNumber = document.getElementById('phone-number').value
+
+      if (!textMessage) {
+        messageDiv.innerHTML = 'Remember to enter a message!'
+        return false
+      }
+
+      if (!phoneNumber) {
+        messageDiv.innerHTML = 'Don\'t forget to enter a phone number!'
+        return false
+      }
 
       if (!captchtaResponse) {
         messageDiv.innerHTML = 'Complete the Captcha please!'
         return false
       }
 
-      if (!text) {
-        messageDiv.innerHTML = 'Remember to enter a message!'
-        return false
-      }
-
-      if (!number) {
-        messageDiv.innerHTML = 'Don\' forget to enter a phone number!'
-        return false
-      }
-
       const data = JSON.stringify({
-        to: number,
-        message: text,
+        to: phoneNumber,
+        message: textMessage,
         captcha: captchtaResponse
       })
 
@@ -87,5 +100,7 @@
       });
     });
   </script>
+  <!-- End JS for form submission -->
 </body>
+
 </html>
