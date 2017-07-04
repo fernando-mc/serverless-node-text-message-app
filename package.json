@@ -22,5 +22,9 @@
     "App"
   ],
   "author": "Fernando Medina Corey",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.81.0",
+    "twilio": "^3.4.0"
+  }
 }
