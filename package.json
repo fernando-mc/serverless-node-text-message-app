@@ -22,8 +22,5 @@
     "App"
   ],
   "author": "Fernando Medina Corey",
-  "license": "MIT",
-  "dependencies": {
-    "request": "^2.81.0"
-  }
+  "license": "MIT"
 }
