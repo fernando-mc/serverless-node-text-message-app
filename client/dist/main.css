@@ -47,6 +47,12 @@ div #error-message {
   font-weight: bold;
 }
 
+div #success-message {
+  color: green;
+  font-size: 15px;
+  font-weight: bold;
+}
+
 #contact {
   background: #F9F9F9;
   padding: 25px;

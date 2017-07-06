@@ -15,7 +15,7 @@
 <body>
   <!-- Start HTML for form -->
   <div class="container">  
-    <form id="contact" action="" method="post">
+    <form id="contact">
       <div id='logo'>
         <img src="http://thewoofgarden.com/img/projects/riley_and_bella.jpg" />
         <img src="https://s3-us-west-2.amazonaws.com/assets.site.serverless.com/blog/twilio-logo.jpg" />
@@ -24,6 +24,7 @@
       <h3>Woof Garden Text Reminders</h3>
       <h4>Fill out this form to send a text message to a client.</h4>
       <div id='error-message'></div>
+      <div id='success-message'></div>
       <fieldset>
         <input id="phone-number" placeholder="Client Phone Number" type="tel" tabindex="3" required>
       </fieldset>
@@ -33,7 +34,7 @@
       <!-- Replace YOUR_RECAPTCHA_SITE_KEY with yours -->
       <!-- It should look something like this: -->
       <!-- 7LSAAUACSAAD5PZ_MYQAiC7cNDuDPesw3MUljI -->
-      <div class="g-recaptcha" data-sitekey="6LeJ0CcUAAAAABZlGPgiKRd25sicdxAnrKJr3NYZ"></div>
+      <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
       <fieldset>
         <button name="submit" type="submit" id="send-text" data-submit="...Sending">Send Message</button>
       </fieldset>
@@ -49,25 +50,29 @@
     // It should look something like this:
     // https://qw324asdasd.execute-api.us-east-1.amazonaws.com/dev/api/sendSms
     const API_ENDPOINT = 'YOUR_API_ENDPOINT_URL';
-    var messageDiv = document.getElementById('error-message')
+    var errorDiv = document.getElementById('error-message')
+    var successDiv = document.getElementById('success-message')
     // Handle public api call
-    document.getElementById('send-text').addEventListener('click', function () {
+    document.getElementById('send-text').addEventListener('click', function (event) {
+      // Prevents the page reloading
+      event.preventDefault()
+
       const captchtaResponse = grecaptcha.getResponse() || false
       const textMessage = document.getElementById('message').value
       const phoneNumber = document.getElementById('phone-number').value
 
       if (!textMessage) {
-        messageDiv.innerHTML = 'Remember to enter a message!'
+        errorDiv.innerHTML = 'Remember to enter a message!'
         return false
       }
 
       if (!phoneNumber) {
-        messageDiv.innerHTML = 'Don\'t forget to enter a phone number!'
+        errorDiv.innerHTML = 'Don\'t forget to enter a phone number!'
         return false
       }
 
       if (!captchtaResponse) {
-        messageDiv.innerHTML = 'Complete the Captcha please!'
+        errorDiv.innerHTML = 'Complete the Captcha please!'
         return false
       }
 
@@ -92,8 +97,8 @@
         response.json().then(function(data) {
           console.log('Response:', data);
           const body = JSON.parse(data.body);
-          messageDiv.textContent = '';
-          messageDiv.textContent = (body && body.message) ? body.message : '';
+          errorDiv.textContent = '';
+          successDiv.textContent = (body && body.message) ? body.message : '';
         });
       }).catch(function(err) {
         console.log(err)
