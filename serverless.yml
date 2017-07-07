@@ -4,18 +4,25 @@ provider:
   name: aws
   runtime: nodejs6.10
   environment:
-    # replace these env variables with your twilio account values
-    TWILIO_ACCOUNT_SID: YOUR-TWILIO-ACCOUNT-SID-HERE
-    TWILIO_AUTH_TOKEN: YOUR-TWILIO-AUTH-TOKEN-HERE
-    TWILIO_PHONE_NUMBER: YOUR-TWILIO-PHONE-NUMBER-HERE
-    GOOGLE_RECAPTCHA_TOKEN: YOUR-RECAPTCHA-TOKEN-HERE
+    # Replace these environment variables with your Twilio and Google values
+    TWILIO_ACCOUNT_SID: your-twilio-account-sid-here
+    TWILIO_AUTH_TOKEN: your-twilio-auth-token-here
+    TWILIO_PHONE_NUMBER: your-twilio-phone-number-here
+    GOOGLE_RECAPTCHA_TOKEN: your-recaptcha-token-here
 
 functions:
   validateRecaptchaSendSms:
-    handler: handler.validateRecaptchaSendSms
+    handler: handler.validateAndSend
     events:
       - http:
           path: api/sendSms
           method: post
           integration: lambda
           cors: true
+
+plugins:
+  - serverless-finch
+
+custom:
+  client:
+    bucketName: your-unique-bucketname-here
