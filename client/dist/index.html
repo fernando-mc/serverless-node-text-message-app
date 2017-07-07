@@ -98,7 +98,11 @@
           console.log('Response:', data);
           const body = JSON.parse(data.body);
           errorDiv.textContent = '';
-          successDiv.textContent = (body && body.message) ? body.message : '';
+          if (body.status === 'success') {
+            successDiv.textContent = (body && body.message) ? body.message : '';
+          } else {
+            errorDiv.textContent = (body && body.message) ? body.message : '';
+          };
         });
       }).catch(function(err) {
         console.log(err)
